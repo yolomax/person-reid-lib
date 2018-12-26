@@ -50,9 +50,9 @@ Video : iLIDS-VID, PRID-2011, LPW, MARS, DukeMTMC-VideoReID
 
 #### Updates
 
-2018.12.26  The initial version is available.
+**2018.12.26**  The initial version is available.
 
-2018.11.19  The code for *lib* has been released.
+**2018.11.19**  The code for *lib* has been released.
 
 
 #### Related person ReID projects:
