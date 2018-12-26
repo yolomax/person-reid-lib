@@ -27,7 +27,7 @@ def main():
     manager.set_dataset(4)
 
     perf_box = {}
-    repeat_times = 1
+    repeat_times = 10
     for task_i in range(repeat_times):
         manager.split_id = int(task_i) 
         task = Solver(manager)
