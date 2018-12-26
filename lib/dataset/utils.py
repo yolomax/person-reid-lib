@@ -3,15 +3,43 @@ from __future__ import division
 from __future__ import print_function
 
 
+import shutil
+import argparse
+import os
+import errno
+import pickle
 import numpy as np
+from pathlib import Path
 import lmdb
 import h5py
 from pathlib import Path
 from PIL import Image
-from lib.utils.util import ParseDatasetName, ConstType, check_path
+from lib.utils.util import ConstType, check_path
 
 
-__all__ = ['DataStoreManager']
+__all__ = ['ParseDatasetName', 'DataStoreManager']
+
+
+class ParseDatasetName(object):
+    @staticmethod
+    def to_str(img_shape, img_dtype):
+        name = '('
+        for i in img_shape:
+            name += '%04d_' % i
+        name += str(img_dtype) + ')'
+        return name
+
+    @staticmethod
+    def recover(name):
+        parse_info = name.split('(')[1].split(')')[0].split('_')
+        img_shape = []
+        for shape_i in parse_info[:-1]:
+            img_shape.append(int(shape_i))
+        if parse_info[-1] == 'uint8':
+            img_dtype = np.uint8
+        else:
+            raise KeyError
+        return img_shape, img_dtype
 
 
 class DataStoreManager(ConstType):
@@ -26,12 +54,13 @@ class DataStoreManager(ConstType):
             assert isinstance(self.resize_hw, (tuple, list))
             assert len(self.resize_hw) == 2
         check_path(self.file_folder, create=True)
+
         dataset_dir = list(self.file_folder.glob(self.dataset_name + '_*.' + self.store_type))
 
         self._store_factory = {'db': {'read': self.read_lmdb, 'write': self.write_lmdb},
                                'h5': {'read': self.read_h5, 'write': self.write_h5}}
 
-        self.store_optical_flow = False
+        self.store_optical_flow = True  # if you want to use optical flow, enable it.
 
         if len(dataset_dir) == 0:
             with_optical_flow = False
@@ -51,6 +80,7 @@ class DataStoreManager(ConstType):
         else:
             assert len(dataset_dir) == 1
             self.dataset_dir = dataset_dir[0]
+
         self.parse()
         self.init()
 

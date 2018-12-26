@@ -71,7 +71,7 @@ def unpack_file(file_path, target_path, logger=None):
     assert file_path.exists() and file_path.is_file()
     assert os.path.exists(target_path) and os.path.isdir(target_path)
     printf('Begin extract file from ' + str(file_path) + ' to ' + str(target_path))
-    shutil.unpack_archive(str(file_path),target_path)
+    shutil.unpack_archive(str(file_path), target_path)
     printf('Extract Finish')
 
 
@@ -80,7 +80,7 @@ def np_filter(arr, *arg):
     for i_axis, axis_i in enumerate(arg):
         map_list = []
         for i_elem, elem_i in enumerate(axis_i):
-            temp_elem_arr = temp_arr[temp_arr[:,i_axis]==elem_i]
+            temp_elem_arr = temp_arr[temp_arr[:, i_axis] == elem_i]
             map_list.append(temp_elem_arr)
         temp_arr = np.concatenate(map_list, axis=0)
     return temp_arr
@@ -95,28 +95,6 @@ class ConstType(object):
             raise self.ConstError
         else:
             self.__dict__[key] = value
-
-
-class ParseDatasetName(object):
-    @staticmethod
-    def to_str(img_shape, img_dtype):
-        name = '('
-        for i in img_shape:
-            name += '%04d_' % i
-        name += str(img_dtype) + ')'
-        return name
-
-    @staticmethod
-    def recover(name):
-        parse_info = name.split('(')[1].split(')')[0].split('_')
-        img_shape = []
-        for shape_i in parse_info[:-1]:
-            img_shape.append(int(shape_i))
-        if parse_info[-1] == 'uint8':
-            img_dtype = np.uint8
-        else:
-            raise KeyError
-        return img_shape, img_dtype
 
 
 class ParseArgs(object):

@@ -7,16 +7,18 @@ __all__ = ['LPW']
 
 
 class LPW(DataSetBase):
-    def __init__(self, data_path, split_id, npr=None, logger=None):
-        super().__init__('LPW', split_id, 'db', data_path, logger)
-        self.raw_data_folder = self.data_folder / 'pep_256x128'
-        self.nCam = 3
+    def __init__(self, root_dir, rawfiles_dir, split_id, npr=None, logger=None):
+        super().__init__('LPW', split_id, 'db', root_dir, logger)
+        self.zipfiles_dir = rawfiles_dir / 'pep_256x128.zip'
+
+        self.raw_data_folder = self.store_dir / 'pep_256x128'
+
         self.resize_hw = None
         self.init()
 
     def check_raw_file(self):
         if not self.raw_data_folder.exists():
-            unpack_file(self.raw_file_path, self.data_folder)
+            unpack_file(self.zipfiles_dir, self.store_dir)
 
     def _get_dict(self):
 

@@ -15,25 +15,27 @@ __all__ = ['VIPeR']
 
 
 class VIPeR(DataSetBase):
-    def __init__(self, data_path, split_id, npr=None, logger=None):
-        super().__init__('VIPeR', split_id, 'h5', data_path, logger)
-        self.raw_data_folder = self.data_folder / 'VIPeR'
+    def __init__(self, root_dir, rawfiles_dir, split_id, npr=None, logger=None):
+        super().__init__('VIPeR', split_id, 'h5', root_dir, logger)
+        self.zipfiles_dir = rawfiles_dir / 'VIPeR.v1.0.zip'
+
+        self.raw_data_folder = self.store_dir / 'VIPeR'
         self.dataset_url = 'http://users.soe.ucsc.edu/~manduchi/VIPeR.v1.0.zip'
         self.cam_a_path = self.raw_data_folder / 'cam_a'
         self.cam_b_path = self.raw_data_folder / 'cam_b'
 
         self.resize_hw = None
         self.npr = npr
-        self.nCam = 2
+
         self.init()
 
     def check_raw_file(self):
-        if not self.raw_file_path.exists():
-            check_path(self.raw_file_path.parent, create=True)
-            urlretrieve(self.dataset_url, self.raw_file_path)
+        if not self.zipfiles_dir.exists():
+            check_path(self.zipfiles_dir.parent, create=True)
+            urlretrieve(self.dataset_url, self.zipfiles_dir)
 
         if not self.raw_data_folder.exists():
-            unpack_file(self.raw_file_path, self.data_folder, self.logger)
+            unpack_file(self.zipfiles_dir, self.store_dir, self.logger)
 
         assert self.cam_a_path.exists()
         assert self.cam_b_path.exists()

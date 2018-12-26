@@ -15,24 +15,25 @@ __all__ = ['DukeMTMCreID']
 
 
 class DukeMTMCreID(DataSetBase):
-    def __init__(self, data_path, split_id, npr=None, logger=None):
-        super().__init__('DukeMTMCreID', split_id, 'h5', data_path, logger)
-        self.raw_data_folder = self.data_folder / 'DukeMTMC-reID'
+    def __init__(self, root_dir, rawfiles_dir, split_id, npr=None, logger=None):
+        super().__init__('DukeMTMCreID', split_id, 'h5', root_dir, logger)
+        self.zipfiles_dir = rawfiles_dir / 'DukeMTMC-reID.zip'
+
+        self.raw_data_folder = self.store_dir / 'DukeMTMC-reID'
         self.train_dir = self.raw_data_folder / 'bounding_box_train'
         self.query_dir = self.raw_data_folder / 'query'
         self.gallery_dir = self.raw_data_folder / 'bounding_box_test'
 
-        self.nCam = 8
         self.resize_hw = (256, 128)
         self.init()
 
     def check_raw_file(self):
-        assert self.raw_file_path.exists()
+        assert self.zipfiles_dir.exists()
 
         if not self.raw_data_folder.exists():
-            unpack_file(self.raw_file_path, self.data_folder, self.logger)
-            if (self.data_folder / '__MACOSX').exists():
-                remove_folder(self.data_folder / '__MACOSX')
+            unpack_file(self.zipfiles_dir, self.store_dir, self.logger)
+            if (self.store_dir / '__MACOSX').exists():
+                remove_folder(self.store_dir / '__MACOSX')
 
         assert self.train_dir.exists()
         assert self.query_dir.exists()

@@ -6,16 +6,16 @@ def release_resource(func):
     @wraps(func)
     def wrapper(cls, *args, **kwargs):
         result = func(cls, *args, **kwargs)
-        cls.Data.data.close()
+        pass   # cls.xxx.close()
         return result
     return wrapper
 
 
 def print_info(func):
     @wraps(func)
-    def wrapper(cls,*args,**kwargs):
+    def wrapper(cls, *args, **kwargs):
         cls.logger.info('Solver information!')
-        cls.logger.info('Train nPerson %d' % cls.Data.data.train_person_num)
+        cls.logger.info('Train nPerson %d' % cls.Data.dataset.train_person_num)
         cls.logger.info('Seed {}'.format(cls.manager.seed))
         result = func(cls, *args, **kwargs)
         return result

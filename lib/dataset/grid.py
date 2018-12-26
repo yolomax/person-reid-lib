@@ -16,26 +16,27 @@ __all__ = ['GRID']
 
 
 class GRID(DataSetBase):
-    def __init__(self, data_path, split_id, npr=None, logger=None):
-        super().__init__('GRID', split_id, 'h5', data_path, logger)
-        self.raw_data_folder = self.data_folder / 'underground_reid'
+    def __init__(self, root_dir, rawfiles_dir, split_id, npr=None, logger=None):
+        super().__init__('GRID', split_id, 'h5', root_dir, logger)
+        self.zipfiles_dir = rawfiles_dir / 'underground_reid.zip'
+
+        self.raw_data_folder = self.store_dir / 'underground_reid'
         self.dataset_url = 'http://personal.ie.cuhk.edu.hk/~ccloy/files/datasets/underground_reid.zip'
         self.probe_path = self.raw_data_folder / 'probe'
         self.gallery_path = self.raw_data_folder / 'gallery'
         self.split_mat_path = self.raw_data_folder / 'features_and_partitions.mat'
 
         self.resize_hw = (256, 128)
-        self.nCam = 5
         self.npr = npr
         self.init()
 
     def check_raw_file(self):
-        if not self.raw_file_path.exists():
-            check_path(self.raw_file_path.parent, create=True)
-            urlretrieve(self.dataset_url, self.raw_file_path)
+        if not self.zipfiles_dir.exists():
+            check_path(self.zipfiles_dir.parent, create=True)
+            urlretrieve(self.dataset_url, self.zipfiles_dir)
 
         if not self.raw_data_folder.exists():
-            unpack_file(self.raw_file_path, self.data_folder, self.logger)
+            unpack_file(self.zipfiles_dir, self.zipfiles_dir, self.logger)
 
     def _get_dict(self):
         probe_img_paths = sorted(glob.glob(osp.join(self.probe_path, '*.jpeg')))

@@ -1,4 +1,4 @@
-from lib.evaluation.evaluation_rule import EvaluatorBase
+from lib.evaluation.evaluation_rule.eval_base import EvaluatorBase
 from lib.evaluation.evaluation_rule.eval_standard import EvalStandard
 from lib.evaluation.evaluation_rule.eval_mars import EvalMARS
 from lib.evaluation.evaluation_rule.eval_cuhk03 import EvalCUHK03
@@ -7,9 +7,9 @@ __all__ = ['Evaluator']
 
 
 class Evaluator(object):
-    def __init__(self, detail_info, name, task_dir, cuhk03_classic=False, logger=None):
+    def __init__(self, store_search_result, name, task_dir, cuhk03_classic=False, logger=None):
         self.dataset_name = name
-        self.detail_info = detail_info
+        self.store_search_result = store_search_result
         self.task_dir = task_dir
         self.logger = logger
 
@@ -22,7 +22,8 @@ class Evaluator(object):
                               'DukeMTMCreID': EvalStandard,
                               'GRID': EvalStandard,
                               'Market1501': EvalStandard,
-                              'VIPeR': EvalStandard}
+                              'VIPeR': EvalStandard,
+                              'DukeMTMC-VideoReID': EvalStandard}
 
         if self.dataset_name not in self._eval_factory:
             raise KeyError
@@ -56,6 +57,6 @@ class Evaluator(object):
 
     def final_result(self):
         cmc, mAP, avgSame, avgDiff, distMat = self._eval_manager.final_result()
-        if self.detail_info:
+        if self.store_search_result:
             self._example_buffer(self._eval_manager.false_positive(distMat))
         return cmc, mAP, avgSame, avgDiff

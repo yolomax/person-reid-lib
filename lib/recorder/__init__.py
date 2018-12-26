@@ -6,8 +6,8 @@ import sys
 
 class Recorder(ConstType):
 
-    def __init__(self,father_path, time_tag, device):
-        self.father_path = father_path
+    def __init__(self, task_dir, time_tag, device):
+        self.father_path = task_dir
         self.time_tag = time_tag
         self.logger = InfoLogger(check_path(self.father_path / 'output/log', create=False), 'log.txt',
                                  self.time_tag).logger

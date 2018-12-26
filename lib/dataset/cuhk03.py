@@ -17,14 +17,16 @@ __all__ = ['CUHK03']
 
 
 class CUHK03(DataSetBase):
-    def __init__(self, data_path, split_id, npr=None, logger=None):
-        super().__init__('CUHK03', split_id, 'h5', data_path, logger)
-        self.raw_data_folder = self.data_folder / 'cuhk03_release'
-        self.raw_mat_path = self.raw_data_folder / 'cuhk-03.mat'
-        self.split_config_path = self.data_folder / 'split_config'
+    def __init__(self, root_dir, rawfiles_dir, split_id, npr=None, logger=None):
+        super().__init__('CUHK03', split_id, 'h5', root_dir, logger)
+        self.zipfiles_dir = rawfiles_dir / 'cuhk03_release.zip'
 
-        self.imgs_detected_dir = self.data_folder / 'images_detected'
-        self.imgs_labeled_dir = self.data_folder / 'images_labeled'
+        self.raw_data_folder = self.store_dir / 'cuhk03_release'
+        self.raw_mat_path = self.raw_data_folder / 'cuhk-03.mat'
+        self.split_config_path = self.store_dir / 'split_config'
+
+        self.imgs_detected_dir = self.store_dir / 'images_detected'
+        self.imgs_labeled_dir = self.store_dir / 'images_labeled'
 
         self.split_classic_det_json_path = self.split_config_path / 'splits_classic_detected.json'
         self.split_classic_lab_json_path = self.split_config_path / 'splits_classic_labeled.json'
@@ -33,25 +35,24 @@ class CUHK03(DataSetBase):
         self.split_new_lab_json_path = self.split_config_path / 'splits_new_labeled.json'
 
         self.split_new_mat_url = 'https://github.com/zhunzhong07/person-re-ranking/archive/master.zip'
-        self.split_new_det_mat_path = self.data_folder / 'cuhk03_new_protocol_config_detected.mat'
-        self.split_new_lab_mat_path = self.data_folder / 'cuhk03_new_protocol_config_labeled.mat'
+        self.split_new_det_mat_path = self.store_dir / 'cuhk03_new_protocol_config_detected.mat'
+        self.split_new_lab_mat_path = self.store_dir / 'cuhk03_new_protocol_config_labeled.mat'
 
-        self.nCam = 2
         self.resize_hw = (256, 128)
         self.init()
 
     def check_raw_file(self):
-        assert self.raw_file_path.exists()
+        assert self.zipfiles_dir.exists()
 
         if not self.raw_data_folder.exists():
-            unpack_file(self.raw_file_path, self.data_folder, self.logger)
+            unpack_file(self.zipfiles_dir, self.store_dir, self.logger)
 
         check_path(self.split_config_path, create=True)
 
         if not self.split_new_det_mat_path.exists() or not self.split_new_lab_mat_path.exists():
             config_file_dir = self.split_config_path / 'person-re-ranking-master'
             if not config_file_dir.exists():
-                config_file_path = self.data_folder / 'person-re-ranking-master.zip'
+                config_file_path = self.store_dir / 'person-re-ranking-master.zip'
                 if not config_file_path.exists():
                     urlretrieve(self.split_new_mat_url, config_file_path)
 
@@ -60,11 +61,11 @@ class CUHK03(DataSetBase):
             if not self.split_new_det_mat_path.exists():
                 copy_file_to(
                     self.split_config_path / 'person-re-ranking-master/evaluation/data/CUHK03/cuhk03_new_protocol_config_detected.mat',
-                    self.data_folder)
+                    self.store_dir)
             if not self.split_new_lab_mat_path.exists():
                 copy_file_to(
                     self.split_config_path / 'person-re-ranking-master/evaluation/data/CUHK03/cuhk03_new_protocol_config_labeled.mat',
-                    self.data_folder)
+                    self.store_dir)
 
             if config_file_dir.exists():
                 remove_folder(config_file_dir)
@@ -74,12 +75,12 @@ class CUHK03(DataSetBase):
     def _get_dict(self):
         self._preprocess()
 
-        split_paths = [self.split_new_lab_json_path,
-                       self.split_new_det_json_path,
-                       self.split_classic_lab_json_path,
-                       self.split_classic_det_json_path]
+        split_paths = [self.split_new_det_json_path,
+                       self.split_new_lab_json_path,
+                       self.split_classic_det_json_path,
+                       self.split_classic_lab_json_path]
 
-        split_paths_info = ['New labeled', 'New detected', 'Classic labeled', 'Classic detected']
+        split_paths_info = ['New detected', 'New labeled', 'Classic detected', 'Classic labeled']
 
         images_list = set()
         for split_path in split_paths:
@@ -132,7 +133,7 @@ class CUHK03(DataSetBase):
         data_dict = {}
         data_dict['dir'] = images_list
         data_dict['split'] = data_splits
-        data_dict['info'] = 'CUHK03 Dataset. \nSplit ID: 0 New labeled\nSplit ID: 1 New detected\nSplit ID: 2-21 Classic labeled\nSplit ID: 22-41 Classic detected\n'
+        data_dict['info'] = 'CUHK03 Dataset. \nSplit ID: 0 New detected\nSplit ID: 1 New labeled\nSplit ID: 2-21 Classic detected\nSplit ID: 22-41 Classic labeled\n'
 
         return data_dict
 

@@ -14,20 +14,20 @@ __all__ = ['CUHK01']
 
 
 class CUHK01(DataSetBase):
-    def __init__(self, data_path, split_id, npr=None, logger=None):
-        super().__init__('CUHK01', split_id, 'h5', data_path, logger)
-        self.raw_data_folder = self.data_folder / 'campus'
+    def __init__(self, root_dir, rawfiles_dir, split_id, npr=None, logger=None):
+        super().__init__('CUHK01', split_id, 'h5', root_dir, logger)
+        self.raw_data_folder = self.store_dir / 'campus'
+        self.zipfiles_dir = rawfiles_dir / 'CUHK01.zip'
 
         self.resize_hw = None
-        self.nCam = 2
         self.npr = npr
         self.init()
 
     def check_raw_file(self):
-        assert self.raw_file_path.exists()
+        assert self.zipfiles_dir.exists()
 
         if not self.raw_data_folder.exists():
-            unpack_file(self.raw_file_path, self.data_folder, self.logger)
+            unpack_file(self.zipfiles_dir, self.store_dir, self.logger)
 
     def _get_dict(self):
         img_list = sorted(glob.glob(osp.join(self.raw_data_folder, '*.png')))

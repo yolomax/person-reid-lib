@@ -15,22 +15,24 @@ __all__ = ['Market1501']
 
 
 class Market1501(DataSetBase):
-    def __init__(self, data_path, split_id, npr=None, logger=None):
-        super().__init__('Market1501', split_id, 'h5', data_path, logger)
-        self.raw_data_folder = self.data_folder / 'Market-1501-v15.09.15'
+    def __init__(self, root_dir, rawfiles_dir, split_id, npr=None, logger=None):
+        super().__init__('Market1501', split_id, 'h5', root_dir, logger)
+        self.zipfiles_dir = rawfiles_dir / 'Market-1501-v15.09.15.zip'
+
+        self.raw_data_folder = self.store_dir / 'Market-1501-v15.09.15'
         self.train_dir = self.raw_data_folder / 'bounding_box_train'
         self.query_dir = self.raw_data_folder / 'query'
         self.gallery_dir = self.raw_data_folder / 'bounding_box_test'
 
-        self.nCam = 6
+
         self.resize_hw = None
         self.init()
 
     def check_raw_file(self):
-        assert self.raw_file_path.exists()
+        assert self.zipfiles_dir.exists()
 
         if not self.raw_data_folder.exists():
-            unpack_file(self.raw_file_path, self.data_folder, self.logger)
+            unpack_file(self.zipfiles_dir, self.store_dir, self.logger)
 
         assert self.train_dir.exists()
         assert self.query_dir.exists()

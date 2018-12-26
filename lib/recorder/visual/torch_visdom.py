@@ -174,7 +174,7 @@ class TorchVisual(object):
         self.logger = logger
         self.device = device
         self._father_name = self._folder_path.parts[-1]
-        self._env_name = device['name'] + '_' + self._father_name + '_' + tag
+        self._env_name = self.device['name'] + '_' + self._father_name + '_' + tag
 
         self._target_dir = check_path(self._folder_path / 'output/log', True)
 

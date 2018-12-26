@@ -8,29 +8,31 @@ from lib.utils.util import np_filter, unpack_file, check_path
 
 
 class PRID2011(DataSetBase):
-    def __init__(self, data_path, split_id, npr=None, logger=None):
-        super().__init__('PRID-2011', split_id, 'h5', data_path, logger)
-        self.raw_data_folder = self.data_folder / 'prid_2011'
+    def __init__(self, root_dir, rawfiles_dir, split_id, npr=None, logger=None):
+        super().__init__('PRID-2011', split_id, 'h5', root_dir, logger)
+        self.zipfiles_dir = rawfiles_dir / 'prid_2011.zip'
+
+        self.raw_data_folder = self.store_dir / 'prid_2011'
         self.dataset_url = 'https://files.icg.tugraz.at/f/6ab7e8ce8f/?raw=1'
-        self.split_mat_path = data_path['split_file']
+        self.split_mat_path = root_dir / 'iLIDS-VID/train-test people splits/train_test_splits_prid.mat'
         self.cam_a_path = self.raw_data_folder / 'multi_shot' / 'cam_a'
         self.cam_b_path = self.raw_data_folder / 'multi_shot' / 'cam_b'
 
         self.split_rate = 0.5
-        self.nCam = 2
-        self.minframes = 27
+
+        self.minframes = 21
         self.npr = npr
         self.resize_hw = None
         self.init()
 
     def check_raw_file(self):
-        if not self.raw_file_path.exists():
-            check_path(self.raw_file_path.parent, create=True)
-            urlretrieve(self.dataset_url, self.raw_file_path)
+        if not self.zipfiles_dir.exists():
+            check_path(self.zipfiles_dir.parent, create=True)
+            urlretrieve(self.dataset_url, self.zipfiles_dir)
 
         if not self.raw_data_folder.exists():
             check_path(self.raw_data_folder, create=True)
-            unpack_file(self.raw_file_path, self.raw_data_folder, self.logger)
+            unpack_file(self.zipfiles_dir, self.raw_data_folder, self.logger)
 
         assert self.split_mat_path.exists()
 

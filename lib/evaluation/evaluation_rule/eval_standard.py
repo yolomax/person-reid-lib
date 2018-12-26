@@ -3,10 +3,7 @@ from __future__ import print_function
 from __future__ import division
 
 import numpy as np
-import copy
-from collections import defaultdict
-import sys
-from lib.evaluation.evaluation_rule import EvaluatorBase
+from .eval_base import EvaluatorBase
 
 
 try:

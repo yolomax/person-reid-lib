@@ -3,14 +3,14 @@ import numpy as np
 
 
 class SamplerBase(Sampler):
-    def __init__(self, dataset, instance_num, sample_num, sample_len, npr):
-        super().__init__(dataset)
+    def __init__(self, data_info, instance_num, sample_num, sample_len, npr):
+        super().__init__(data_info)
         self.npr = npr
 
-        self.train_info = dataset.train_info.copy()
-        self.person_num = dataset.train_person_num
-        self.frames_len_min = np.min(self.train_info[:, 4])
-        self.frames_len_max = np.max(self.train_info[:, 4])
+        self.data_info = data_info.copy()
+        self.person_num = np.unique(self.data_info[:, 0]).size
+        self.frames_len_min = np.min(self.data_info[:, 4])
+        self.frames_len_max = np.max(self.data_info[:, 4])
 
         self.instance_num = instance_num
         self.sample_num = sample_num

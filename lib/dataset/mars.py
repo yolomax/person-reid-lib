@@ -8,16 +8,18 @@ __all__ = ['MARS']
 
 
 class MARS(DataSetBase):
-    def __init__(self, data_path, split_id, npr=None, logger=None):
-        super().__init__('MARS', split_id, 'db', data_path, logger)
-        self.raw_data_folder = self.data_folder / 'MARS'
-        self.nCam = 6
+    def __init__(self, root_dir, rawfiles_dir, split_id, npr=None, logger=None):
+        super().__init__('MARS', split_id, 'db', root_dir, logger)
+        self.zipfiles_dir = rawfiles_dir / 'bbox_train.zip'
+
+        self.raw_data_folder = self.store_dir / 'MARS'
+
         self.resize_hw = None
         self.init()
 
     def check_raw_file(self):
         check_path(self.raw_data_folder, create=True)
-        raw_file_folder = self.raw_file_path.parent
+        raw_file_folder = self.zipfiles_dir.parent
         raw_data_list = ['bbox_train', 'bbox_test', 'MARS-evaluation-master']
 
         for raw_data in raw_data_list:

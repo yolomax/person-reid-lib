@@ -3,15 +3,15 @@ from torch.utils.data.sampler import Sampler
 
 
 class TestSampler(Sampler):
-    def __init__(self, dataset, batch_size):
-        super().__init__(dataset)
-        self.test_info = dataset.test_info.copy()
+    def __init__(self, data_info, batch_size):
+        super().__init__(data_info)
+        self.test_info = data_info.copy()
         self.track_num = self.test_info.shape[0]
-        self.image_num = dataset.test_image_num
+        self.image_num = np.sum(self.test_info[:, -1])
         self.batch_size_max = batch_size
 
         self.image_member = self._get_image_member()
-        self.iter_num = (self.image_num + self.batch_size_max -1) // self.batch_size_max
+        self.iter_num = (self.image_num + self.batch_size_max - 1) // self.batch_size_max
         self.idx = 0
 
     def _get_image_member(self):

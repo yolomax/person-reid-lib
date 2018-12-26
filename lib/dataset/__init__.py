@@ -5,6 +5,7 @@ from __future__ import print_function
 
 from lib.utils.util import np_filter
 import numpy as np
+import copy
 from torch.utils.data import Dataset
 from .prid2011 import PRID2011
 from .ilidsvid import iLIDSVID
@@ -16,6 +17,7 @@ from .dukemtmcreid import DukeMTMCreID
 from .grid import GRID
 from .market1501 import Market1501
 from .viper import VIPeR
+from .dukemtmcvidreid import DukeMTMCVidReID
 
 
 class ConstType(object):
@@ -30,7 +32,7 @@ class ConstType(object):
 
 
 class DataBank(Dataset, ConstType):
-    def __init__(self, name, data_path, split_id, npr, minframes=None, logger=None):
+    def __init__(self, name, root_dir, rawfiles_dir, split_id, npr, minframes=None, logger=None):
         self.name = name
         self._transform = None
         self.logger = logger
@@ -44,20 +46,23 @@ class DataBank(Dataset, ConstType):
                                  'DukeMTMCreID': DukeMTMCreID,
                                  'GRID': GRID,
                                  'Market1501': Market1501,
-                                 'VIPeR': VIPeR}
+                                 'VIPeR': VIPeR,
+                                 'DukeMTMC-VideoReID': DukeMTMCVidReID}
 
         if not self.name in self._dataset_factory:
             self.logger.error('No this dataset. Wrong name.')
             raise KeyError
 
-        if self.name in ['PRID-2011', 'iLIDS-VID', 'MARS', 'LPW']:
+        if self.name in ['PRID-2011', 'iLIDS-VID', 'MARS', 'LPW', 'DukeMTMC-VideoReID']:
             self.is_image_dataset = False
             self.minframes = minframes
         else:
             self.is_image_dataset = True
             self.minframes = None
 
-        self.dataset = self._dataset_factory[self.name](data_path, split_id, npr, self.logger)
+        self._dataset = self._dataset_factory[self.name](root_dir, rawfiles_dir, split_id, npr, self.logger)
+        self.images_dir_list = copy.deepcopy(self._dataset.data_dict['dir'])
+        self.shape = copy.deepcopy(self._dataset.data_dict['shape'])
         self.train_info, self.test_info, self.probe_index, self.gallery_index, self.junk_index = self._preprocess()
 
         self.train_person_num = np.unique(self.train_info[:, 0]).size
@@ -70,13 +75,13 @@ class DataBank(Dataset, ConstType):
         self.test_frames_len_min = np.min(self.test_info[:, 4])
         self.test_frames_len_max = np.max(self.test_info[:, 4])
 
-        self.nCam = self.dataset.nCam    # it may is different from the train cam num or test cam num
         self.train_cam_num = np.unique(self.train_info[:, 1]).size
+        self.test_cam_num = np.unique(self.test_info[:, 1]).size
 
     def set_transform(self, transform):
         self._transform = transform
 
-    def _check(self,train_info, test_info, probe_info, gallery_info):
+    def _check(self, train_info, test_info, probe_info, gallery_info):
         assert np.unique(test_info[:, 2]).size == test_info.shape[0]
 
         if self.minframes is not None:
@@ -162,7 +167,7 @@ class DataBank(Dataset, ConstType):
             return test_info
 
     def _preprocess(self):
-        train_info, probe_info, gallery_info = self.dataset.prepare_data()
+        train_info, probe_info, gallery_info = self._dataset.prepare_data()
         test_info = self._merge_to_test(probe_info, gallery_info)
 
         self._print_info(train_info, test_info, probe_info, gallery_info)
@@ -207,7 +212,7 @@ class DataBank(Dataset, ConstType):
         person_id = item[0]
         cam_id = item[1]
         sample_list = item[2:]
-        data = self.dataset.read(sample_list)
+        data = self._dataset.read(sample_list)
         if self._transform is not None:
             data = self._transform(data)
         return data, person_id

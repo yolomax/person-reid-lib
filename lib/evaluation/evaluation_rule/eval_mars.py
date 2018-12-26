@@ -1,6 +1,9 @@
 import numpy as np
-from lib.evaluation.evaluation_rule import EvaluatorBase
+from .eval_base import EvaluatorBase
 
+'''
+The evaluation code on MARS dataset is the python implementation of the evaluation code from https://github.com/liangzheng06/MARS-evaluation
+'''
 
 def compute_AP(good_index, junk_index, order):
     cmc = np.zeros(order.size, dtype=np.float32)

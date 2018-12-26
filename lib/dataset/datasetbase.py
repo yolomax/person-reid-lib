@@ -4,19 +4,18 @@ from __future__ import print_function
 
 
 from lib.utils.util import check_path, ConstType, DataPacker
-from lib.dataset.dataset_tools import DataStoreManager
+from lib.dataset.utils import DataStoreManager
 import numpy as np
 
 
 class DataSetBase(ConstType):
-    def __init__(self, name, split_id, store_type, data_path, logger):
+    def __init__(self, name, split_id, store_type, root_dir, logger):
         self.name = name
         self.split_id = split_id
         self.store_type = store_type
-        self.data_folder = data_path['folder_path']
-        self.raw_file_path = data_path['raw_file']
+        self.store_dir = root_dir / str(name)
         self.logger = logger
-        self.dict_dir = check_path(self.data_folder, create=True) / 'dict.json'
+        self.dict_dir = check_path(self.store_dir, create=True) / (str(name) + '_dict.json')
 
     def _get_dict(self):
         raise NotImplementedError
@@ -50,7 +49,7 @@ class DataSetBase(ConstType):
         data_dict['probe'] = np.asarray(tmp_data_dict['probe'], np.int64)
         data_dict['gallery'] = np.asarray(tmp_data_dict['gallery'], np.int64)
         data_dict['dir'] = images_dir_list
-        self.storemanager = DataStoreManager(self.data_folder, self.name, self.store_type, data_dict['dir'], all_track_info, self.resize_hw, self.logger)
+        self.storemanager = DataStoreManager(self.store_dir, self.name, self.store_type, data_dict['dir'], all_track_info, self.resize_hw, self.logger)
         data_dict['shape'] = self.storemanager.img_shape
         data_dict['dtype'] = self.storemanager.img_dtype
         self.data_dict = data_dict

@@ -16,25 +16,27 @@ __all__ = ['iLIDSVID']
 
 
 class iLIDSVID(DataSetBase):
-    def __init__(self, data_path, split_id, npr=None, logger=None):
-        super().__init__('iLIDS-VID', split_id, 'h5', data_path, logger)
-        self.raw_data_folder = self.data_folder / 'i-LIDS-VID'
+    def __init__(self, root_dir, rawfiles_dir, split_id, npr=None, logger=None):
+        super().__init__('iLIDS-VID', split_id, 'h5', root_dir, logger)
+        self.zipfiles_dir = rawfiles_dir / 'iLIDS-VID.tar'
+
+        self.raw_data_folder = self.store_dir / 'i-LIDS-VID'
         self.dataset_url = 'http://www.eecs.qmul.ac.uk/~xiatian/iLIDS-VID/iLIDS-VID.tar'
-        self.split_mat_path = self.data_folder / 'train-test people splits' / 'train_test_splits_ilidsvid.mat'
+        self.split_mat_path = self.store_dir / 'train-test people splits' / 'train_test_splits_ilidsvid.mat'
         self.cam_1_path = self.raw_data_folder / 'sequences/cam1'
         self.cam_2_path = self.raw_data_folder / 'sequences/cam2'
         self.split_rate = 0.5
-        self.nCam = 2
+
         self.resize_hw = None
         self.init()
 
     def check_raw_file(self):
-        if not self.raw_file_path.exists():
-            check_path(self.raw_file_path.parent, create=True)
-            urlretrieve(self.dataset_url, self.raw_file_path)
+        if not self.zipfiles_dir.exists():
+            check_path(self.zipfiles_dir.parent, create=True)
+            urlretrieve(self.dataset_url, self.zipfiles_dir)
 
         if not self.raw_data_folder.exists():
-            unpack_file(self.raw_file_path, self.data_folder, self.logger)
+            unpack_file(self.zipfiles_dir, self.store_dir, self.logger)
 
         assert self.split_mat_path.exists()
 

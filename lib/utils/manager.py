@@ -18,19 +18,19 @@ class Manager(object):
         self._device_dict = {
             'pc':
                 {'name': 'pc',
-                 'data': Path('/data/data/data/'),
-                 'rawfile': Path('/data//data/rawfile'),
-                 'Model': Path('/home/username/opt/model'),
+                 'root': Path('/home/username/data'),      # Store the extracted files
+                 'rawfiles': Path('/home/username/rawfiles'),  # The location of the original compressed file
+                 'Model': Path('/home/username/model'),    # Store the officially downloaded torch model parameters
                  'web_env_dir': '/home/username/ignore',
                  'web_host': "http://localhost",
                  'web_port': 31094,
                  'num_workers': 4,
                  'test_batch_size': 16},
             'server': {'name': 'server',
-                       'data': Path('/data1/username/data'),
-                       'rawfile': Path('/data1/username/rawfile'),
-                       'Model': Path('/data1/username/model'),
-                       'web_env_dir': '/home/username/ignore',
+                       'root': Path('/data/data'),  # Store the extracted files
+                       'rawfiles': Path('/data/rawfiles'),  # The location of the original compressed file
+                       'Model': Path('/data/model'),  # Store the officially downloaded torch model parameters
+                       'web_env_dir': '/data/ignore',
                        'web_host': "http://localhost",
                        'web_port': 31094,
                        'num_workers': 16,
@@ -38,16 +38,23 @@ class Manager(object):
         }
 
         self._dataset_box = ['iLIDS-VID', 'PRID-2011', 'LPW', 'MARS', 'VIPeR', 'Market1501', 'CUHK03', 'CUHK01',
-                             'DukeMTMCreID', 'GRID']
+                             'DukeMTMCreID', 'GRID', 'DukeMTMC-VideoReID']
 
         self.init_device()
 
         self.recorder = Recorder(check_path(self.task_dir, create=False), self.time_tag, self.device)
         self.logger = self.recorder.logger
+        self.logger.info('Device: ' + self.device['name'])
         self.logger.info('{0:-^60}'.format('Set Seed ' + str(self.seed)))
 
     def set_dataset(self, idx):
-        self.dataset_name = self._dataset_box[idx]
+        if isinstance(idx, int):
+            self.dataset_name = self._dataset_box[idx]
+        elif isinstance(idx, str):
+            assert idx in self._dataset_box
+            self.dataset_name = idx
+        else:
+            raise TypeError
         self.logger.info('{0:-^60}'.format('Set Dataset ' + self.dataset_name))
 
     def check_epoch(self, epoch_id):
@@ -110,41 +117,14 @@ class Manager(object):
         self.logger.info('Set Split ID {:2d}'.format(value))
 
     def init_device(self):
-        if self._device_dict['pc']['rawfile'].exists():
+        if self._device_dict['pc']['rawfiles'].exists():
             device = self._device_dict['pc']
-        elif self._device_dict['server']['rawfile'].exists():
-            device = self._device_dict['server']
         else:
-            raise KeyError
+            device = self._device_dict['server']
 
-        check_path(device['data'], create=True)
+        check_path(device['root'], create=True)
         check_path(device['Model'], create=True)
         check_path(device['web_env_dir'], create=True)
-
-        device['data_path'] = {'iLIDS-VID': {'raw_file': device['rawfile'] / 'iLIDS-VID.tar',
-                                             'folder_path': device['data'] / 'iLIDS-VID'},
-                               'LPW': {'raw_file': device['rawfile'] / 'pep_256x128.zip',
-                                       'folder_path': device['data'] / 'LPW'},
-                               'PRID-2011': {'raw_file': device['rawfile'] / 'prid_2011.zip',
-                                             'split_file': device[
-                                                               'data'] / 'iLIDS-VID/train-test people splits/train_test_splits_prid.mat',
-                                             'folder_path': device['data'] / 'PRID-2011'},
-                               'MARS': {'raw_file': device['rawfile'] / 'bbox_train.zip',
-                                        'folder_path': device['data'] / 'MARS'},
-                               'Market1501': {'raw_file': device['rawfile'] / 'Market-1501-v15.09.15.zip',
-                                              'folder_path': device['data'] / 'Market1501'},
-                               'CUHK03': {'raw_file': device['rawfile'] / 'cuhk03_release.zip',
-                                          'folder_path': device['data'] / 'CUHK03'},
-                               'DukeMTMCreID': {'raw_file': device['rawfile'] / 'DukeMTMC-reID.zip',
-                                                'folder_path': device['data'] / 'DukeMTMCreID'},
-                               'CUHK01': {'raw_file': device['rawfile'] / 'CUHK01.zip',
-                                          'folder_path': device['data'] / 'CUHK01'},
-                               'VIPeR': {'raw_file': device['rawfile'] / 'VIPeR.v1.0.zip',
-                                         'folder_path': device['data'] / 'VIPeR'},
-                               'GRID': {'raw_file': device['rawfile'] / 'underground_reid.zip',
-                                        'folder_path': device['data'] / 'GRID'}
-                               }
-
 
         self.device = device
 
