@@ -23,7 +23,7 @@ epoch_list = None
 cmc = []
 mAP = []
 for task_i in task_list:
-    cmc_dir = model_dir / str('r_' + str(task_i) + '/output/result')
+    cmc_dir = model_dir / str(str(task_i) + '/output/result')
     cmc_dir_tmp = cmc_dir.glob('cmc_*.json')
     cmc_dir_tmp = sorted([x.name for x in cmc_dir_tmp])[-1]
     print(cmc_dir_tmp)
