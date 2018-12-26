@@ -4,6 +4,8 @@ The pytorch-based lightweight library of person re-identification.
 
 #### Config
 
+---
+
 Install
 
 ```
@@ -22,6 +24,8 @@ self._device_dict = xxxx
 
 #### Optical Flow
 
+---
+
 Install opencv
 ```
 pip install opencv-contrib-python
@@ -37,6 +41,9 @@ Solver.use_flow = True
 ```
 
 #### How to run:
+
+---
+
 ```
 cd person-reid-lib_folder
 sh script/server_0.sh     
@@ -44,11 +51,15 @@ sh script/server_0.sh
 
 #### Dataset
 
+---
+
 Image: VIPeR, Market1501, CUHK03, CUHK01, DukeMTMCreID, GRID,
 
 Video : iLIDS-VID, PRID-2011, LPW, MARS, DukeMTMC-VideoReID
 
 #### Updates
+
+---
 
 **2018.12.26**  The initial version is available.
 
@@ -56,6 +67,8 @@ Video : iLIDS-VID, PRID-2011, LPW, MARS, DukeMTMC-VideoReID
 
 
 #### Related person ReID projects:
+
+---
 
 [deep person reid](https://github.com/KaiyangZhou/deep-person-reid)
 
