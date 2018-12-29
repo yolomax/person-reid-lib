@@ -13,7 +13,7 @@ from lib.evaluation.eval_tools import compute_rank
 
 def main():
     cur_dir = file_abs_path(__file__)
-    manager = Manager(cur_dir, seed=1, mode='Train')
+    manager = Manager(cur_dir, seed=None, mode='Train')
     logger = manager.logger
     ParseArgs(logger)
     if manager.seed is not None:
@@ -27,7 +27,7 @@ def main():
     manager.set_dataset(0)
 
     perf_box = {}
-    repeat_times = 1
+    repeat_times = 10
     for task_i in range(repeat_times):
         manager.split_id = int(task_i) 
         task = Solver(manager)
