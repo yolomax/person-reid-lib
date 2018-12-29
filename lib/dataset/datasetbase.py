@@ -35,6 +35,7 @@ class DataSetBase(ConstType):
         tmp_data_dict = DataPacker.load(self.dict_dir, self.logger)
         self.logger.info(tmp_data_dict['info'])
         images_dir_list = tmp_data_dict['dir']
+        
         if 'track_info' in tmp_data_dict:
             all_track_info = tmp_data_dict['track_info']
         else:

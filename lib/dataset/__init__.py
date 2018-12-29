@@ -116,6 +116,7 @@ class DataBank(Dataset, ConstType):
         test_id = np.unique(test_info[:, 0])
         probe_id = np.unique(probe_info[:, 0])
         gallery_id = np.unique(gallery_info[:, 0])
+        
         assert -1 not in set(test_id)   # junk id set to be -1, it should have been removed.
         assert np.setdiff1d(probe_id, gallery_id).size == 0
         assert set(test_id) == set(probe_id).union(set(gallery_id))

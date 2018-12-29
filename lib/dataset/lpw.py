@@ -21,7 +21,6 @@ class LPW(DataSetBase):
             unpack_file(self.zipfiles_dir, self.store_dir)
 
     def _get_dict(self):
-
         frame_list = []
         frame_begin = 0
 
@@ -67,5 +66,3 @@ class LPW(DataSetBase):
         data_dict['track_info'] = track_data
         data_dict['info'] = 'LPW Dataset'
         return data_dict
-
-

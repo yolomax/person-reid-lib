@@ -28,6 +28,7 @@ class MARS(DataSetBase):
 
     def _get_dict(self):
         self.logger.info('Begin Get Video List')
+        
         train_name_path = self.raw_data_folder / 'MARS-evaluation-master/info/train_name.txt'
         test_name_path = self.raw_data_folder / 'MARS-evaluation-master/info/test_name.txt'
         track_train_info_path = self.raw_data_folder / 'MARS-evaluation-master/info/tracks_train_info.mat'

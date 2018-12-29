@@ -29,7 +29,6 @@ class DukeMTMCreID(DataSetBase):
 
     def check_raw_file(self):
         assert self.zipfiles_dir.exists()
-
         if not self.raw_data_folder.exists():
             unpack_file(self.zipfiles_dir, self.store_dir, self.logger)
             if (self.store_dir / '__MACOSX').exists():

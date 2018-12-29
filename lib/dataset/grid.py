@@ -34,7 +34,6 @@ class GRID(DataSetBase):
         if not self.zipfiles_dir.exists():
             check_path(self.zipfiles_dir.parent, create=True)
             urlretrieve(self.dataset_url, self.zipfiles_dir)
-
         if not self.raw_data_folder.exists():
             unpack_file(self.zipfiles_dir, self.zipfiles_dir, self.logger)
 
@@ -104,5 +103,3 @@ class GRID(DataSetBase):
             splits.append(split)
         self.logger.info("Load 10 random splits")
         return splits
-
-

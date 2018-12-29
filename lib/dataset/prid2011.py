@@ -20,7 +20,7 @@ class PRID2011(DataSetBase):
 
         self.split_rate = 0.5
 
-        self.minframes = 21
+        self.minframes = 27
         self.npr = npr
         self.resize_hw = None
         self.init()
@@ -29,7 +29,6 @@ class PRID2011(DataSetBase):
         if not self.zipfiles_dir.exists():
             check_path(self.zipfiles_dir.parent, create=True)
             urlretrieve(self.dataset_url, self.zipfiles_dir)
-
         if not self.raw_data_folder.exists():
             check_path(self.raw_data_folder, create=True)
             unpack_file(self.zipfiles_dir, self.raw_data_folder, self.logger)

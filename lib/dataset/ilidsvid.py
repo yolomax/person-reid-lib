@@ -34,7 +34,6 @@ class iLIDSVID(DataSetBase):
         if not self.zipfiles_dir.exists():
             check_path(self.zipfiles_dir.parent, create=True)
             urlretrieve(self.dataset_url, self.zipfiles_dir)
-
         if not self.raw_data_folder.exists():
             unpack_file(self.zipfiles_dir, self.store_dir, self.logger)
 
