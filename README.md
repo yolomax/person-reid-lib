@@ -46,7 +46,7 @@ Solver.use_flow = True
 
 ```
 cd person-reid-lib_folder
-sh script/server_0.sh     
+sh script/server_0.sh
 ```
 
 #### Dataset
@@ -60,6 +60,7 @@ Video : iLIDS-VID, PRID-2011, LPW, MARS, DukeMTMC-VideoReID
 #### Updates
 
 ---
+**2018.12.29**  The code of [Spatial and Temporal Mutual Promotion for Video-based Person Re-identification](https://arxiv.org/abs/1812.10305) is available.
 
 **2018.12.26**  The initial version is available.
 
