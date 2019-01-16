@@ -45,8 +45,14 @@ Solver.use_flow = True
 ---
 
 ```
+# image-dataset
 cd person-reid-lib_folder
 sh script/server_0.sh
+
+# video-dataset
+
+cd person-reid-lib_folder
+sh script/task_video.sh
 ```
 
 #### Dataset
