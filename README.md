@@ -4,6 +4,8 @@ The pytorch-based lightweight library of person re-identification.
 
 #### Config
 
+python 3.6 or 3.7
+pytorch >= 0.4
 ---
 
 Install
@@ -28,7 +30,7 @@ self._device_dict = xxxx
 
 Install opencv
 ```
-pip install opencv-contrib-python
+pip install opencv-contrib-python    # version 3.4.2.17
 ```
 
 Config
