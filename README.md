@@ -5,7 +5,9 @@ The pytorch-based lightweight library of person re-identification.
 #### Config
 
 python 3.6 or 3.7
+
 pytorch >= 0.4
+
 ---
 
 Install
