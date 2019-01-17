@@ -17,7 +17,7 @@ Install
 
 ```
 pip install numpy h5py lmdb
-pip install visdom  # Optional. If you don't need a web presentation, don't install it.
+pip install visdom  # Optional. If you don't need a web page visualization, don't install it.
 ```
 Install [pytorch and torchvision](https://pytorch.org/)
 
