@@ -4,11 +4,14 @@ The pytorch-based lightweight library of person re-identification.
 
 #### Config
 
-python 3.6 or 3.7
-
-pytorch >= 0.4
-
 ---
+
+Version
+```
+python 3.6 or 3.7
+pytorch >= 0.4
+```
+
 
 Install
 
@@ -19,7 +22,7 @@ pip install visdom  # Optional. If you don't need a web presentation, don't inst
 Install [pytorch and torchvision](https://pytorch.org/)
 
 
-Indicates the folder of the original files and where the unzipped file is placed
+Indicates the folder of the original files and where the unzipped file is placed.
 ```
 # person-reid-lib/lib/utils/manager.py
 self._device_dict = xxxx
