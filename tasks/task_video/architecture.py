@@ -70,9 +70,12 @@ class ModelClient(ModelServer):
         model = self.get_model(BackboneModel, raw_model_dir, logger)
         self.backbone_fea_dim = model.fea_dim
         self.fea_dim = 256
+        aux_fc_in_dim = model.aux_fc_in_dim
         self.net_info = ['backbone feature dim: ' + str(self.backbone_fea_dim)]
         self.net_info.append('final feature dim: ' + str(self.fea_dim))
         self.base = model.base
+        model.feature.AuxLogits.fc = nn.Linear(aux_fc_in_dim, num_classes)
+        model.feature.AuxLogits.fc.stddev = 0.001
 
         if not self.is_image_dataset:
             self.fuse_net = FuseNet(self.backbone_fea_dim, self.fea_dim)
