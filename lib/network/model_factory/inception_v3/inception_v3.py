@@ -83,6 +83,7 @@ class BackboneModel(nn.Module):
         logger.info('Model restored from pretrained inception_v3_google')
 
         self.fea_dim = model.fc.in_features
+        self.aux_fc_in_dim = model.AuxLogits.fc.in_features
         model.fc = nn.Sequential()
         model.AuxLogits.fc = nn.Sequential()
         self.feature = model
